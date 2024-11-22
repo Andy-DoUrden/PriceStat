@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 import axios from "axios";
 
@@ -7,15 +7,40 @@ const token =
 
 axios.defaults.baseURL = "https://api.warframe.market/v1";
 axios.defaults.headers.common["Authorization"] = token;
+axios.defaults.headers.common["accept"] = "application/json";
 
 function App() {
-  const getData = async () => {
-    const data = await axios.get(`/items`);
-    return data;
-  };
+  const [data, setData] = useState([]);
 
-  console.log(getData());
-  return <></>;
+  // const getData = async () => {
+  //   const data = await axios.get(`/items/vauban_prime_set/orders`);
+  //   return data;
+  // };
+
+  const API_URL = "https://api.warframe.market/v1/items";
+
+  async function fetchData() {
+    try {
+      const response = await fetch(`${API_URL}/`, {
+        headers: { accept: "application/json" },
+      });
+      const data = await response.json();
+      return data.payload.orders;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }
+
+  // console.log(getData());
+  return (
+    <>
+      <button
+        onClick={() => {
+          console.log(fetchData());
+        }}
+      ></button>
+    </>
+  );
 }
 
 export default App;
